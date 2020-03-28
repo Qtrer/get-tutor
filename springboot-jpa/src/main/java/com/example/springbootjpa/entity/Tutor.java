@@ -19,7 +19,6 @@ public class Tutor {
     private String name;
     private String password;
     private int sumCount;
-    private float remainScore;
     @OneToMany(mappedBy = "tutor")
     private List<Student> students;
     @OneToMany(mappedBy = "tutor")
