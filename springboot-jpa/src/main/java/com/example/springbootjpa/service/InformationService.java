@@ -1,6 +1,7 @@
 package com.example.springbootjpa.service;
 
 import com.example.springbootjpa.entity.Course;
+import com.example.springbootjpa.entity.Elective;
 import com.example.springbootjpa.entity.Student;
 import com.example.springbootjpa.entity.Tutor;
 import com.example.springbootjpa.repository.CourseRepository;
@@ -141,5 +142,54 @@ public class InformationService {
 
     public void deleteAllCourses(){
         courseRepository.deleteAll();
+    }
+
+    //Elective
+    public Elective addElective(Elective elective){
+        electiveRepository.save(elective);
+        return elective;
+    }
+
+    public Elective addElective(int studentId, int courseId){
+        Student student = informationService.getStudentById(studentId);
+        Course course = informationService.getCourseById(courseId);
+        Elective elective = new Elective();
+        elective.setStudent(student);
+        elective.setCourse(course);
+        electiveRepository.save(elective);
+        return elective;
+    }
+
+    public Elective getElective(int studentId, int courseId){
+        return electiveRepository.getElective(studentId, courseId).orElse(null);
+    }
+
+    public List<Elective> getElectivesByStudentName(String studentName){
+        return electiveRepository.getElectivesByStudentName(studentName).orElse(null);
+    }
+
+    public List<Elective> getElectivesByStudentNumber(String studentAccount){
+        return electiveRepository.getElectivesByStudentAccount(studentAccount).orElse(null);
+    }
+
+    public List<Elective> getElectivesByStudentId(int id){
+        return electiveRepository.getElectivesStudentId(id).orElse(null);
+    }
+
+    public List<Elective> getElectivesByCourse(String name){
+        return electiveRepository.getElectivesByCourseName(name).orElse(null);
+    }
+
+    public List<Elective> getElectivesByCourse(int id){
+        return electiveRepository.getElectivesCourseId(id).orElse(null);
+    }
+
+    public List<Elective> getAllElectives(){
+        return electiveRepository.list().orElse(null);
+    }
+
+    public Elective updateGrade(float grade, int studentId, int courseID){
+        electiveRepository.updateGrade(grade, studentId, courseID);
+        return informationService.getElective(studentId, courseID);
     }
 }
