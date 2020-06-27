@@ -27,9 +27,9 @@ public interface StudentRepository extends BaseRepository<Student, Integer> {
     int updateTutor(@Param("tutor") Tutor tutor, @Param("id") int id);
 
     @Modifying
-    @Query("UPDATE Student s SET s.weightedScore=:weightedGrade WHERE s.id=:id")
-    int updateWeightedGrade(@Param("weightedScore") double weightedGrade, @Param("id") int id);
+    @Query("UPDATE Student s SET s.weightedScore=:weightedScore WHERE s.id=:id")
+    int updateWeightedGrade(@Param("weightedScore") double weightedScore, @Param("id") int id);
 
-    Optional<Student> findById (int  id);
+    Optional<Student> findById (int id);
     void deleteById(int id);
 }

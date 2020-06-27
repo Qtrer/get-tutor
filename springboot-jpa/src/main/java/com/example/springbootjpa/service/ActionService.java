@@ -4,13 +4,19 @@ import com.example.springbootjpa.entity.*;
 import com.example.springbootjpa.repository.CourseRepository;
 import com.example.springbootjpa.repository.DirectionRepository;
 import com.example.springbootjpa.repository.ElectiveRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
+@Transactional
+@Slf4j
 public class ActionService {
     @Autowired
     private CourseRepository courseRepository;

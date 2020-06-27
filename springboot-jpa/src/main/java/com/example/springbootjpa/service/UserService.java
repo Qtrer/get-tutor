@@ -21,9 +21,9 @@ public class UserService {
     @Autowired
     private StudentRepository studentRepository;
     @Autowired
-    private UserService userService;
-    @Autowired
     private ActionService actionService;
+    @Autowired
+    private UserService userService;
     @Autowired
     private PasswordEncoder encoder;
 
