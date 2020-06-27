@@ -1,0 +1,32 @@
+GET http://localhost:8080/api/student/tutor/2
+Accept: application/json
+authorization: {{token}}
+
+###
+GET http://localhost:8080/api/student/information/2
+Accept: application/json
+authorization: {{token}}
+
+###
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+  "name": "eg1",
+  "password": "eg1"
+}
+
+> {% client.global.set("token", response.headers.valueOf("authorization")); %}
+
+###
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+  "name": "eg2",
+  "password": "eg2"
+}
+
+> {% client.global.set("token", response.headers.valueOf("authorization")); %}
+
+###

@@ -14,6 +14,12 @@ public interface CourseRepository extends BaseRepository<Course, Integer>{
     @Query("from Course c")
     Optional<List<Course>> list();
 
+    @Query("SELECT c FROM Course c WHERE c.tutor.id=:id")
+    Optional<List<Course>> getCourseByTutor(@Param("id")int id);
+
+    @Query("SELECT c FROM Course c WHERE c.name=:name AND c.tutor.id=:id")
+    Optional<Course> getCourseByNameAndTutorId(@Param("name")String name,@Param("id")int id);
+
     @Modifying
     @Query("UPDATE Course c SET c.lowestScore=:lowestScore WHERE c.id=:id")
     int updateLowestScore(@Param("lowestScore") float lowestScore,@Param("id")int id);
@@ -22,6 +28,6 @@ public interface CourseRepository extends BaseRepository<Course, Integer>{
     @Query("UPDATE Course c SET c.weight=:weight WHERE c.id=:id")
     int updateWeight(@Param("weight")float weight, @Param("id")int id);
 
-    Optional<List<Course>> findByName(String name);
-    void deleteByName(String name);
+    Optional<Course> findByName(String name);
+    void deleteById(int id);
 }

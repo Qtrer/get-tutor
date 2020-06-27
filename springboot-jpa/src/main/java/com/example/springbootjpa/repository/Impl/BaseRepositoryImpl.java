@@ -10,10 +10,11 @@ public class BaseRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> implem
     private EntityManager manager;
     public BaseRepositoryImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);
+        this.manager = entityManager;
     }
 
     @Override
     public void refresh(T t) {
-
+        manager.refresh(t);
     }
 }

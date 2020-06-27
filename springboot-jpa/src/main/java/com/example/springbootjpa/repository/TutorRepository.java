@@ -15,11 +15,14 @@ public interface TutorRepository extends BaseRepository<Tutor, Integer> {
     Optional<List<Tutor>> list();
 
     @Modifying
-    @Query("UPDATE Tutor t SET t.password=:password WHERE t.id=:id")
-    int updatePassword(@Param("password")String password, @Param("id") int id);
+    @Query("UPDATE Tutor t SET t.instructedNumber=:instructedNumber WHERE t.id=:id")
+    int updateInstructedNumber(@Param("instructedNumber")int instructedNumber,@Param("id") int id);
+
+    @Modifying
+    @Query("UPDATE Tutor t SET t.totalNumber=:totalNumber WHERE t.id=:id")
+    int updateTotalNumber(@Param("totalNumber")int totalNumber,@Param("id") int id);
 
 
     Optional<Tutor> findById(int id);
-    Optional<Tutor> findByName(String name);
-    void deleteByName(String name);
+    void deleteById(int id);
 }

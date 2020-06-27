@@ -1,0 +1,235 @@
+PATCH http://localhost:8080/api/tutor/courses
+Accept: application/json
+authorization: {{token}}
+
+###
+
+//TUTOR(BO):Pre-select students who do not already exist
+POST http://localhost:8080/api/tutor/advance
+Content-Type: application/json
+authorization: {{token}}
+
+{
+  "user": {
+    "name": "eg3",
+    "number": "20200010"
+  }
+}
+
+###
+//TUTOR(BO):Select existing students in advance
+POST http://localhost:8080/api/tutor/advance
+Content-Type: application/json
+authorization: {{token}}
+
+{
+  "user": {
+    "number": "20200011"
+  }
+}
+
+###
+//TUTOR(BO):display the student ranking
+GET http://localhost:8080/api/tutor/ranking
+Accept: application/json
+authorization: {{token}}
+
+###
+//TUTOR(LiLi):add electives
+POST http://localhost:8080/api/tutor/electives
+Content-Type: application/json
+authorization: {{token}}
+
+[ {
+  "student": {
+    "user": {
+      "name": "qwe",
+      "number": "20200011"
+    }
+  },
+  "course": {
+    "name": "project"
+  },
+  "score": 88
+},
+  {
+    "student": {
+      "user": {
+        "name": "asd",
+        "number": "20200012"
+      }
+    },
+    "course": {
+      "name": "manage"
+    },
+    "score": 85
+  },
+  {
+    "student": {
+      "user": {
+        "name": "zxc",
+        "number": "20200013"
+      }
+    },
+    "course": {
+      "name": "manage"
+    },
+    "score": 82
+  }
+]
+###
+//TUTOR(BO):add electives
+POST http://localhost:8080/api/tutor/electives
+Content-Type: application/json
+authorization: {{token}}
+
+[ {
+  "student": {
+    "user": {
+      "name": "qwe",
+      "number": "20200010"
+    }
+  },
+  "course": {
+    "name": "python"
+  },
+  "score": 80
+},
+  {
+    "student": {
+      "user": {
+        "name": "asd",
+        "number": "20200011"
+      }
+    },
+    "course": {
+      "name": "c++"
+    },
+    "score": 85
+  },
+  {
+    "student": {
+      "user": {
+        "name": "zxc",
+        "number": "20200012"
+      }
+    },
+    "course": {
+      "name": "web"
+    },
+    "score": 82
+  },
+  {
+    "student": {
+      "user": {
+        "name": "zxc",
+        "number": "20200012"
+      }
+    },
+    "course": {
+      "name": "python"
+    },
+    "score": 90
+  },
+  {
+    "student": {
+      "user": {
+        "name": "zxc",
+        "number": "20200012"
+      }
+    },
+    "course": {
+      "name": "c++"
+    },
+    "score": 92
+  }
+]
+###
+//TUTOR:add direction
+POST http://localhost:8080/api/tutor/direction
+Content-Type: application/json
+authorization: {{token}}
+
+{
+  "name": "The front end design"
+}
+
+###
+
+//TUTOR:update information
+PATCH http://localhost:8080/api/tutor/information/ranges/12/reservedRange/30
+Content-Type: application/json
+authorization: {{token}}
+
+
+###
+//TUTOR:list courses
+GET http://localhost:8080/api/tutor/courses
+Accept: application/json
+authorization: {{token}}
+
+###
+
+
+###
+//TUTOR:delete course
+DELETE http://localhost:80/api/tutor/courses/1
+Accept: application/json
+authorization: {{token}}
+
+###
+
+//TUTOR:update course
+PATCH http://localhost:8080/api/tutor/course
+Content-Type: application/json
+authorization: {{token}}
+
+{
+  "id": 3,
+  "name": "c++",
+  "weight": 0.4,
+  "lowestScore": 70
+}
+
+###
+
+//TUTOR:add course
+POST http://localhost:8080/api/tutor/courses
+Content-Type: application/json
+authorization: {{token}}
+
+{
+  "name": "web"
+}
+
+###
+//TUTOR:index
+GET http://localhost:8080/api/tutor/index
+Accept: application/json
+authorization: {{token}}
+
+###
+//TUTOR(LiLi):login
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+  "name": "LiLi",
+  "password": 202002
+}
+
+> {% client.global.set("token", response.headers.valueOf("authorization")); %}
+
+###
+//TUTOR(BO):login
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+  "name": "BO",
+  "password": 202001
+}
+
+> {% client.global.set("token", response.headers.valueOf("authorization")); %}
+
+###
