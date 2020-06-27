@@ -1,5 +1,6 @@
 package com.example.springbootjpa.controller;
 
+import com.example.springbootjpa.component.EncryptComponent;
 import com.example.springbootjpa.component.RequestComponent;
 import com.example.springbootjpa.entity.*;
 import com.example.springbootjpa.service.ActionService;
@@ -61,8 +62,9 @@ public class TutorController {
         Student s = new Student();
         s.setUser(u);
         userService.addStudent(s);
+        List<Student> students = userService.listStudents();
         return Map.of(
-                "student",s
+                "students",students
         );
 
     }
@@ -70,8 +72,9 @@ public class TutorController {
     @DeleteMapping("student/{sid}")
     public Map deleteStudent(@PathVariable int sid) {
         userService.deleteStudent(sid);
+        List<Student> students = userService.listStudents();
         return Map.of(
-                "massage","successful delete!"
+                "students",students
         );
     }
 
@@ -87,8 +90,9 @@ public class TutorController {
         u.setNumber(student.getUser().getNumber());
         u.setName(student.getUser().getName());
         userService.updateUser(u);
+        List<Student> students = userService.listStudents();
         return Map.of(
-                "student",student
+                "students",students
         );
     }
 
@@ -116,15 +120,18 @@ public class TutorController {
         });
         course.setTutor(tutor);
         actionService.addCourse(course);
+        List<Course> courses1 = actionService.listCourseByTutorID(requestComponent.getUid());
         return Map.of(
-                "course",course
+                "courses",courses1
         );
     }
 
     @DeleteMapping("courses/{cid}")
     public Map deleteCourses(@PathVariable int cid) {
         actionService.deleteCourse(cid);
+        List<Course> courses = actionService.listCourseByTutorID(requestComponent.getUid());
         return Map.of(
+                "courses",courses,
                 "massage","successful delete!"
         );
     }
@@ -143,8 +150,9 @@ public class TutorController {
         c.setLowestScore(course.getLowestScore());
         c.setName(course.getName());
         actionService.updateCourse(c);
+        List<Course> courses = actionService.listCourseByTutorID(requestComponent.getUid());
         return Map.of(
-                "course",c
+                "courses",courses
         );
     }
 
@@ -177,6 +185,8 @@ public class TutorController {
     //Electives Information
     @PostMapping("electives")
     public Map addElectives(@Valid @RequestBody List<Elective> electives){
+        log.debug("asdadasd");
+        log.debug("{}", requestComponent.getUid());
         Tutor tutor = userService.getTutorById(requestComponent.getUid());
         electives.forEach(elective -> {
             log.debug("{}", elective.getScore());
@@ -268,7 +278,7 @@ public class TutorController {
 
     @PatchMapping("direction")
     public Map updateDirection(@Valid @RequestBody Direction direction){
-        Direction d =  actionService.getDirection(direction.getId());
+        Direction d = actionService.getDirection(direction.getId());
         if(d==null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "The direction you want to change does not exist");
@@ -305,7 +315,7 @@ public class TutorController {
     @GetMapping("ranking")
     public Map getRankingStudents(){
         log.debug("{}", "sadasdas");
-        List<Student> students = actionService.RankStudents(requestComponent.getUid());
+        List<Student> students = actionService.totalStudents(requestComponent.getUid());
         students.forEach(s->{
             log.debug("{}", s.getId());
             log.debug("{}", s.getUser().getName());
@@ -328,6 +338,7 @@ public class TutorController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "The number of students instructed has reached the upper limit！");
         }
+        log.debug("{}", student.getUser().getNumber());
         if(userService.getUserByNumber(student.getUser().getNumber())==null){
             User u = new User();
             u.setName(student.getUser().getName());
@@ -341,6 +352,10 @@ public class TutorController {
         }
         else {
             Student student1 = userService.getStudentByUserNumber(student.getUser().getNumber());
+            if(student1.getTutor()!=null){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "The student has already chosen a tutor");
+            }
             student1.setTutor(tutor);
             userService.updateStudent(student1);
         }
@@ -350,6 +365,4 @@ public class TutorController {
                 "student",student
         );
     }
-
-
 }

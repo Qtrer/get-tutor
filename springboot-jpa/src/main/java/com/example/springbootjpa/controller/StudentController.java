@@ -1,6 +1,7 @@
 package com.example.springbootjpa.controller;
 
 import com.example.springbootjpa.component.RequestComponent;
+import com.example.springbootjpa.controller.vo.CourseScoreVO;
 import com.example.springbootjpa.entity.*;
 import com.example.springbootjpa.service.ActionService;
 import com.example.springbootjpa.service.UserService;
@@ -38,7 +39,7 @@ public class StudentController {
         List<Tutor> tutors = userService.listTutors();
         return Map.of(
                 "student",student,
-                "tutors",tutors
+                "tutors", tutors.subList(1, tutors.size())
         );
     }
 
@@ -55,16 +56,19 @@ public class StudentController {
     @GetMapping("information/{tid}")
     public Map getInformation(@PathVariable int tid){
         boolean qualified = false;
+        Student student = userService.getStudent(requestComponent.getUid());
         Tutor tutor = userService.getTutorById(tid);
-        List<Course> courses = actionService.listCourseByTutorID(tid);
-        List<Elective> electives = actionService.getElectiveByStuIdAndTurId(requestComponent.getUid(),tid);
-        List<Student> students = actionService.RankStudents(tid);
+        List<CourseScoreVO> courseGradeVOS = actionService.listGradeByCourses(actionService.listCourseByTutorID(tid), requestComponent.getUid());
+        List<Student> students = actionService.totalStudents(tid);
+        int rankingIndex = actionService.getRankingIndex(students, requestComponent.getUid());
         qualified = actionService.getQualification(requestComponent.getUid(),tid);
         return Map.of(
-                "courses",courses,
-                "electives",electives,
+                "courseGradeVOS",courseGradeVOS,
                 "students",students,
-                "qualified",qualified
+                "qualified",qualified,
+                "tutor",tutor,
+                "student",student,
+                "rankingIndex",rankingIndex
         );
     }
 
@@ -110,22 +114,21 @@ public class StudentController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Sorry, there is no vacancy for the teacher, please contact other teachers immediately.");
         }
-        log.debug("{}", actionService.checkQualification(requestComponent.getUid(),tid));
-
         if(actionService.checkQualification(requestComponent.getUid(),tid)){
-            Student student = userService.getStudent(requestComponent.getUid());
-            student.setTutor(tutor);
-            int inst = userService.getStudentsByTutorId(requestComponent.getUid()).size();
+            int inst = userService.getStudentsByTutorId(tid).size();
+            userService.getStudentsByTutorId(tid).forEach(s->log.debug("{}", s.getUser().getName()));
+            log.debug("{}", userService.getStudentsByTutorId(tid).size());
             tutor.setInstructedNumber(inst+1);
             userService.updateTutor(tutor);
+            Student student = userService.getStudent(requestComponent.getUid());
+            student.setTutor(tutor);
             userService.updateStudent(student);
             massage = "Congratulations, your application has been successful";
         }
+        Student student = userService.getStudent(requestComponent.getUid());
         return Map.of(
-                "massage",massage
+                "student",student
         );
 
     }
-
-
 }

@@ -1,5 +1,6 @@
 package com.example.springbootjpa.service;
 
+import com.example.springbootjpa.controller.vo.CourseScoreVO;
 import com.example.springbootjpa.entity.*;
 import com.example.springbootjpa.repository.CourseRepository;
 import com.example.springbootjpa.repository.DirectionRepository;
@@ -41,7 +42,6 @@ public class ActionService {
         return course;
     }
 
-
     public void deleteCourse(int id){
         courseRepository.deleteById(id);
     }
@@ -50,7 +50,6 @@ public class ActionService {
         courseRepository.save(course);
         return course;
     }
-
 
     public Course getCourse(String name,int tid){
         List<Course> courses = actionService.listCourseByTutorID(tid);
@@ -107,7 +106,7 @@ public class ActionService {
                 .orElse(null);
     }
 
-    public List<Elective> getElectiveByStuIdAndTurId(int sid,int tid) {
+    public List<Elective> getElectiveByStudentIdAndTutorId(int sid,int tid) {
         List<Elective> electives = new ArrayList<>();
         List<Course> courses = actionService.listCourseByTutorID(tid);
         for(Course c:courses){
@@ -167,21 +166,21 @@ public class ActionService {
         });
         return true;
     }
-    public float calculateWeightedGrade(int sid,int tid){
+    public float calculateWeightedScore(int sid,int tid){
         checkSettings(tid);
         float WeightedScore = 0;
-        List<Elective> electives = actionService.getElectiveByStuIdAndTurId(sid, tid);
+        List<Elective> electives = actionService.getElectiveByStudentIdAndTutorId(sid, tid);
         for(Elective ele :electives) {
             WeightedScore += ele.getScore() * ele.getCourse().getWeight();
         }
         return WeightedScore;
     }
 
-    public List<Student> RankStudents(int tid){
+    public List<Student> totalStudents(int tid){
         List<Student> students = userService.listStudents();
         Map<Student, Float> studentScoreMap = new HashMap<>();
         students.forEach(s ->{
-            float WeightedGrade = calculateWeightedGrade(s.getId(), tid);
+            float WeightedGrade = calculateWeightedScore(s.getId(), tid);
             studentScoreMap.put(s, WeightedGrade);
             userService.updateStudentWeightScore(s.getId(),WeightedGrade);
 
@@ -195,7 +194,7 @@ public class ActionService {
 
     public List<Student> SelectStudents(int tid){
         Tutor tutor = userService.getTutorById(tid);
-        List<Student> students = RankStudents(tid);
+        List<Student> students = totalStudents(tid);
         int ran = students.size() < tutor.getReservedRange() ? students.size() : tutor.getReservedRange();
         return students.subList(0, ran);
 
@@ -253,5 +252,34 @@ public class ActionService {
         }
 
         return true;
+    }
+
+    //the grade of a student's assigned course set
+    public List<CourseScoreVO> listGradeByCourses(List<Course> courses, int sid) {
+        List<CourseScoreVO> courseScoreVOS = new ArrayList<>();
+        courses.forEach(c -> {
+            CourseScoreVO courseScoreVO = new CourseScoreVO();
+            Elective e = actionService.getElectiveByStudentIdAndCourseId(sid, c.getId());
+            if(e !=null){
+                courseScoreVO.setScore(e.getScore());
+            }
+            else {
+                courseScoreVO.setScore(0);
+            }
+            courseScoreVO.setCourse(c);
+            courseScoreVO.setSid(sid);
+            courseScoreVOS.add(courseScoreVO);
+                }
+        );
+        return courseScoreVOS;
+    }
+
+    public int getRankingIndex(List<Student> students,int sid){
+        int rankIndex = 0;
+        for (int i = 0; i < students.size(); i++) {
+            if(students.get(i).getId() == sid)
+                rankIndex = i+1;
+        }
+        return rankIndex;
     }
 }

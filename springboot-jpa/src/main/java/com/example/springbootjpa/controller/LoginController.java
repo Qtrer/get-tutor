@@ -46,6 +46,7 @@ public class LoginController {
 //                .filter(u -> encoder.matches(login.getPassword(), u.getPassword()))
 //                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong username and password"));
 
+        log.debug("{}", user.getId());
         MyToken token = new MyToken(user.getId(), user.getRole());
         String auth = encrypt.encryptToken(token);
         response.setHeader(MyToken.AUTHORIZATION, auth);

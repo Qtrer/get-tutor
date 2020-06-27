@@ -14,9 +14,6 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import java.util.Map;
 
-@RestController
-@RequestMapping("/api/admin/")
-@Slf4j
 public class AdminController {
     @Autowired
     private PasswordEncoder encoder;
@@ -32,6 +29,9 @@ public class AdminController {
             u.setName(user.getName());
             u.setPassword(encoder.encode(String.valueOf(user.getNumber())));
             u.setRole(User.Role.TUTOR);
+            tutor.setInstructedNumber(0);
+            tutor.setTotalNumber(30);
+            tutor.setReservedRange(50);
             tutor.setUser(u);
             userService.addTutor(tutor);
         }

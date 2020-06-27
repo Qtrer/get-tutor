@@ -1,5 +1,5 @@
 //ADMIN:update password
-PATCH http://localhost:8080/api/user/settings/password
+PATCH http://localhost:8081/api/user/settings/password
 Content-Type: application/json
 authorization: {{token}}
 
@@ -12,14 +12,14 @@ authorization: {{token}}
 
 ###
 //ADMIN:delete tutor
-DELETE http://localhost:8080/api/admin/tutor/2
+DELETE http://localhost:8081/api/admin/tutor/2
 Accept: application/json
 authorization: {{token}}
 
 
 ###
 //ADMIN:add student
-POST http://localhost:8080/api/admin/student
+POST http://localhost:8081/api/admin/student
 Content-Type: application/json
 authorization: {{token}}
 
@@ -30,7 +30,7 @@ authorization: {{token}}
 
 ###
 //ADMIN:add tutor
-POST http://localhost:8080/api/admin/tutor
+POST http://localhost:8081/api/admin/tutor
 Content-Type: application/json
 authorization: {{token}}
 
@@ -41,7 +41,7 @@ authorization: {{token}}
 
 ###
 //ADMIN:login
-POST http://localhost:8080/api/login
+POST http://localhost:8081/api/login
 Content-Type: application/json
 
 {
