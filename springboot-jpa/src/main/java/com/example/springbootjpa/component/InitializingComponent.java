@@ -19,11 +19,11 @@ public class InitializingComponent implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        final int number = 2017214271;
+        final int number = 202001;
         User user = userService.getUserByNumber(number);
         if (user == null) {
             User u = new User();
-            u.setName("Qtrer");
+            u.setName("BO");
             u.setNumber(number);
             u.setRole(User.Role.TUTOR);
             u.setPassword(encoder.encode(String.valueOf(number)));
